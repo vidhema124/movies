@@ -47,7 +47,7 @@
 
 //       <h1 className="text-4xl font-bold mb-4">{movie.Title}</h1>
 //       <img className="w-64 md:w-80 rounded-lg shadow-lg" src={movie.Poster} alt={movie.Title} />
-      
+
 //       <div className="mt-6 text-lg">
 //         <p><strong>Year:</strong> {movie.Year}</p>
 //         <p><strong>Genre:</strong> {movie.Genre}</p>
@@ -75,6 +75,7 @@ const MovieDetail = () => {
   const [trailerKey, setTrailerKey] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const movieKey = "dQw4w9WgXcQ";
 
   useEffect(() => {
     const fetchMovieDetail = async () => {
@@ -117,7 +118,7 @@ const MovieDetail = () => {
   return movie ? (
     <div className="movie-detail bg-gray-900 text-white min-h-screen flex flex-col items-center p-6">
       {/* Back Button */}
-      <button 
+      <button
         className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg self-start mb-4"
         onClick={() => navigate(-1)}
       >
@@ -126,10 +127,10 @@ const MovieDetail = () => {
 
       {/* Backdrop Image */}
       {movie.backdrop_path && (
-        <img 
-          className="w-full max-w-4xl h-64 object-cover rounded-lg mb-6 shadow-lg" 
-          src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`} 
-          alt={`${movie.title} Backdrop`} 
+        <img
+          className="w-full max-w-4xl h-64 object-cover rounded-lg mb-6 shadow-lg"
+          src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
+          alt={`${movie.title} Backdrop`}
         />
       )}
 
@@ -139,10 +140,10 @@ const MovieDetail = () => {
       {/* Poster & Details */}
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
         {/* Poster */}
-        <img 
-          className="w-64 md:w-80 rounded-lg shadow-lg" 
-          src={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : "/no-movie.png"} 
-          alt={movie.title} 
+        <img
+          className="w-64 md:w-80 rounded-lg shadow-lg"
+          src={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : "/no-movie.png"}
+          alt={movie.title}
         />
 
         {/* Movie Information */}
@@ -155,7 +156,50 @@ const MovieDetail = () => {
           <p><strong>Vote Average:</strong> ⭐ {movie.vote_average} / 10</p>
           <p><strong>Vote Count:</strong> {movie.vote_count}</p>
           <p><strong>Adult Content:</strong> {movie.adult ? "Yes 🔞" : "No ✅"}</p>
-          <p><strong>Video Available:</strong> {movie.video ? "Yes 🎥" : "No ❌"}</p>
+          <p>
+            <strong>Trailer Available:</strong>{" "}
+            {trailerKey ? (
+              <a href={`https://www.youtube.com/embed/${trailerKey}`} target="_blank" rel="noopener noreferrer">
+                Watch ▶️
+              </a>
+            ) : (
+              "No ❌"
+            )}
+          </p>
+          <a href={`https://www.imdb.com/chart/top/`} target="_blank" rel="noopener noreferrer">
+   Visit IMDb ▶️
+</a><br/><br/>
+
+          <div>
+            <p>Available on:</p>
+            <a
+              href={movie?.netflixLink || "https://www.netflix.com/"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-red-500 hover:underline"
+            >
+              Netflix
+            </a><br />
+
+            <a
+              href={movie?.amazonLink || "https://www.primevideo.com/"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-yellow-700 hover:underline"
+            >
+              Amazon Prime
+            </a><br />
+            <a
+              href={movie?.huluLink || "https://www.hulu.com/hub/tv"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-green-500 hover:underline"
+            >
+              Hulu
+            </a>
+
+          </div>
+
         </div>
       </div>
 
