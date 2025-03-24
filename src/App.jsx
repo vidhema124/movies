@@ -26,7 +26,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [upcomingMovies, setUpcomingMovies] = useState([]);
-  const [popularMovies, setPopularMovies] = useState([]); // FIXED: Added state for upcoming movies
+  const [popularMovies, setPopularMovies] = useState([]); 
   const [isLoadingTrending, setIsLoadingTrending] = useState(false);
   const [isLoadingUpcoming, setIsLoadingUpcoming] = useState(false);
   const [isLoadingPopular, setIsLoadingPopular] = useState(false);
@@ -40,6 +40,7 @@ const Home = () => {
       setShowPopup(hasLoggedIn !== "true");
     }
   }, []);
+
   const fetchMovies = async () => {
     setIsLoading(true);
     setErrorMessage("");
@@ -54,14 +55,6 @@ const Home = () => {
 
       const response = await fetch(endpoint);
       const data = await response.json();
-      useEffect(() => {
-        const hasLoggedIn = localStorage.getItem("hasLoggedIn") === "true";
-        if (hasLoggedIn) {
-          setShowPopup(false);
-        } else {
-          setShowPopup(true);
-        }
-      }, []);
 
       if (!data.results) {
         setErrorMessage("Error fetching movies. Please try again later.");
@@ -94,12 +87,9 @@ const Home = () => {
     }
   };
   const handleRedirect = (path) => {
-    setShowPopup(false);
-    if (path === "/signup") {
-      localStorage.setItem("hasLoggedIn", "true");
-    }
     window.location.href = path;
   };
+
   const handleLogout = () => {
     localStorage.removeItem("hasLoggedIn");
     setShowPopup(true);
