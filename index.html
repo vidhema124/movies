@@ -5,46 +5,17 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vmovies</title>
-    <!-- <script src="https://otpless.com/auth.js"></script> -->
     <script
     id="otpless-sdk"
     type="text/javascript"
     src="https://otpless.com/v4/auth.js"
     data-appid="7I999A4OITMKBBQI649F"
   ></script>
-    
-  <!-- <script src="https://otpless.com/auth.js"></script> -->
-
-    <!-- <script id="otpless-sdk" src="https://otpless.com/v4/headless.js" data-appid="7I999A4OITMKBBQI649F"></script> -->
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <!-- <script>
-      const callback = (userinfo) => {
-        const emailMap = otplessUser.identities.find(
-          (item) => item.identityType === "EMAIL"
-        );
     
-        const mobileMap = otplessUser.identities.find(
-          (item) => item.identityType === "MOBILE"
-        )?.identityValue;
-    
-        const token = otplessUser.token;
-    
-        const email = emailMap?.identityValue;
-    
-        const mobile = mobileMap?.identityValue;
-    
-        const name = emailMap?.name || mobileMap?.name;
-    
-        console.log(userinfo);
-    
-        // Implement your custom logic here.
-      };
-      // Initialize OTPLESS SDK with the defined callback.
-      const OTPlessSignin = new OTPless(callback);
-    </script> -->
   </body>
   <!-- <script type="text/javascript" src="https://otpless.com/auth.js"></script> -->
 
