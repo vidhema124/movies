@@ -187,7 +187,7 @@ const MovieDetail = () => {
         </h2>
 
         {loading ? (
-          <p className="text-yellow-500">Loading...</p>
+          <p className="text-yellow-500"></p>
         ) : movies.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {movies.map((movie) => (
