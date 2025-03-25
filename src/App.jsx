@@ -13,7 +13,7 @@ import { useDebounce } from "react-use";
 import Skeleton from "react-loading-skeleton";
 import WishlistPage from "./components/WishlistPage.jsx";
 import SubscriptionPage from "./components/SubscriptionPage.jsx";
-import Signup from "./components/Signup.jsx";
+import Signup from "./components/auth/Signup.jsx";
 
 const API_KEY = "148d7fb358e9a2f5b04a7567677ec479";
 const API_BASE_URL = "https://api.themoviedb.org/3";
@@ -350,7 +350,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/auth/signup" element={<Signup />} />
         <Route path="/movie/:id" element={<MovieDetail />} />
         <Route path="/wishlist" element={<WishlistPage />} />
         <Route path="/subscriptionPage" element={<SubscriptionPage />} />
