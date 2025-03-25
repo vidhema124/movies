@@ -325,7 +325,7 @@ const Home = () => {
       {showPopup && (
         <div className="z-50 fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center">
           <div className="bg-neutral-800 p-12  w-96 rounded-lg shadow-lg text-center">
-            <h2 className="text-2xl  font-bold">Welcome back</h2>
+            <h2 className="text-2xl  font-bold">Welcome back again</h2>
             <p className=" text-white p-2  text-lg ">
               Log in or sign up to get smarter responses, upload files, and
               more.
