@@ -80,7 +80,7 @@ const Signup = () => {
   return (
     <div className="mt-14">
       <Toaster position="top-center" richColors />
-      <div className="bg-white" id="otpless-login-page"></div>
+      {/* <div className="bg-white" id="otpless-login-page"></div> */}
     </div>
   );
 };
