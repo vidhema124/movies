@@ -160,3 +160,8 @@
     display: none;
   }
 }
+#otpless-popup-container {
+  opacity: 1 !important;
+  pointer-events: all !important;
+  visibility: visible !important;
+}
