@@ -31,7 +31,7 @@ const Home = () => {
 
   const fetchMovies = async () => {
     setIsLoading(true);
-    setErrorMessage('');
+    setErrorMessage(''); 
 
     try {
       let endpoint;
