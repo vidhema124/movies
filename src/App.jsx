@@ -8,6 +8,7 @@ import { useDebounce } from 'react-use';
 import Skeleton from 'react-loading-skeleton';
 import WishlistPage from './components/WishlistPage.jsx';
 import SubscriptionPage from './components/SubscriptionPage.jsx';
+import Watchlist from './components/Watchlist.jsx';
 
 const API_KEY = '148d7fb358e9a2f5b04a7567677ec479';
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -266,6 +267,7 @@ const App = () => {
         <Route path="/movie/:id" element={<MovieDetail />} />
         <Route path="/wishlist" element={<WishlistPage />} />
         <Route path="/subscriptionPage" element={<SubscriptionPage />} />
+        <Route path="/watchlist" element={<Watchlist />} />
       </Routes>
     </Router>
   );
