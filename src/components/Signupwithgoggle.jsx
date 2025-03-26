@@ -1,32 +1,38 @@
-import React, { useState } from "react";
+import React from "react";
 import { auth, provider, signInWithPopup, signOut } from "./firbase";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const Signupgoggle = () => {
+const SignupGoogle = () => {
   const navigate = useNavigate();
 
   const handleSignup = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      localStorage.setItem("hasLoggedIn", "true");
-      console.log("User Signed Up:", result.user);
-      
-      navigate(0); 
-    
+      console.log("resultresult ", result);
+
+      const user = result.user;
+
+      if (user) {
+        let body = {
+          name: user.displayName,
+          email: user.email,
+        };
+        const res = await axios.post(
+          "https://movies-app-jgjm.onrender.com/api/v1/user",
+          body
+        );
+
+        console.log("resresres ", res);
+        localStorage.setItem("hasLoggedIn", "true");
+        navigate(0);
+      } else {
+        console.error("Failed to create user");
+      }
     } catch (error) {
       console.error("Error during signup:", error);
     }
   };
-
-//   const handleLogout = async () => {
-//     try {
-//       await signOut(auth);
-//       localStorage.removeItem("hasLoggedIn");
-//       navigate(0); // Refresh the page to reflect logout
-//     } catch (error) {
-//       console.error("Error during logout:", error);
-//     }
-//   };
 
   return (
     <div className="flex flex-col items-center">
@@ -40,4 +46,4 @@ const Signupgoggle = () => {
   );
 };
 
-export default Signupgoggle;
+export default SignupGoogle;
