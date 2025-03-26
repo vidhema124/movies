@@ -331,7 +331,7 @@ const Home = () => {
                 onClick={() => handleRedirect("/signup")}
                 className="cursor-pointer  w-full px-4 py-2 bg-transparent text-white border border-white rounded-full hover:bg-gray-600"
               >
-                Otp less
+               Sign up with Otp less
               </button>
               <Signupgoggle/>
             </div>
