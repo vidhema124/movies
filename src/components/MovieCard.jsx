@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const MovieCard = ({ movie }) => {
+const MovieCard = ({ movie, Poster }) => {
   const navigate = useNavigate();
   const [isWishlisted, setIsWishlisted] = useState(false);
 
@@ -15,7 +15,7 @@ const MovieCard = ({ movie }) => {
   };
 
   const toggleWishlist = (e) => {
-    e.stopPropagation(); // Prevent navigation when clicking wishlist button
+    e.stopPropagation();
 
     let storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
 
@@ -30,13 +30,23 @@ const MovieCard = ({ movie }) => {
   };
 
   return (
-    <div className="movie-card" onClick={handleClick} style={{ cursor: "pointer" }}>
+    <div
+      className="movie-card"
+      onClick={handleClick}
+      style={{ cursor: "pointer" }}
+    >
       <img
-        src={movie.Poster !== "N/A" ? movie.Poster : "/no-movie.png"}
+        src={
+          Poster !== "N/A"
+            ? movie.Poster
+            : movie.poster_path
+            ? movie.poster_path
+            : "/no-movie.png"
+        }
         alt={movie.Title}
       />
       <div className="mt-4">
-        <h3>{movie.Title}</h3>
+        <h3>{movie.Title || movie.original_title}</h3>
         <div className="content">
           <div className="rating">
             <img src="/star.svg" alt="Star Icon" />
@@ -47,14 +57,10 @@ const MovieCard = ({ movie }) => {
           <span>•</span>
           <p className="year">{movie.Year || "N/A"}</p>
         </div>
-        {/* Wishlist Button */}
+
         <button onClick={toggleWishlist} className="wishlist-btn">
           {isWishlisted ? "❤️ " : "🤍"}
         </button>
-        {/* Go to Wishlist Button */}
-        {/* <button onClick={(e) => { e.stopPropagation(); navigate("/wishlist"); }} className="wishlist-page-btn">
-          📜 Go to Wishlist
-        </button> */}
       </div>
     </div>
   );
