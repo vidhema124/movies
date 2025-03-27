@@ -6,9 +6,7 @@ import Skeleton from "react-loading-skeleton";
 import { useNavigate } from "react-router-dom";
 import Signupgoggle from "./Signupwithgoggle.jsx";
 
-
-const API_KEY = "148d7fb358e9a2f5b04a7567677ec479";
-const API_BASE_URL = "https://api.themoviedb.org/3";
+const API_BASE_URLs = "https://movies-app-jgjm.onrender.com/api/v1";
 
 const Home = () => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -23,6 +21,8 @@ const Home = () => {
   const [isLoadingUpcoming, setIsLoadingUpcoming] = useState(false);
   const [isLoadingPopular, setIsLoadingPopular] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [sortOption, setSortOption] = useState("");
+
   const navigate = useNavigate();
 
   useDebounce(() => setDebouncedSearchTerm(searchTerm), 500, [searchTerm]);
@@ -38,47 +38,46 @@ const Home = () => {
     fetchUpcomingMovies();
     fetchPopularMovies();
     fetchMovies();
-  }, [debouncedSearchTerm]);
+  }, [debouncedSearchTerm, sortOption]);
 
   const fetchMovies = async () => {
     setIsLoading(true);
     setErrorMessage("");
 
     try {
-      let endpoint;
-      if (debouncedSearchTerm) {
-        endpoint = `${API_BASE_URL}/search/movie?api_key=${API_KEY}&query=${debouncedSearchTerm}&language=hi-IN&region=IN`;
-      } else {
-        endpoint = `${API_BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=en-US&page=1`;
-      }
+      let endpoint = `${API_BASE_URLs}/movies`;
+
+      const queryParams = new URLSearchParams();
+      if (debouncedSearchTerm)
+        queryParams.append("search", debouncedSearchTerm);
+      if (sortOption) queryParams.append("sort", sortOption);
+
+      if (queryParams.toString()) endpoint += `?${queryParams.toString()}`;
 
       const response = await fetch(endpoint);
       const data = await response.json();
 
-      if (!data.results) {
+      if (!data || !data.message) {
         setErrorMessage("Error fetching movies. Please try again later.");
         setMovieList([]);
         return;
       }
 
-      setMovieList(data.results);
+      setMovieList(data.message);
     } catch (error) {
       setErrorMessage("Error fetching movies. Please try again later.");
     } finally {
       setIsLoading(false);
     }
   };
-
   const fetchTrendingMovies = async () => {
     setIsLoadingTrending(true);
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=1`
-      );
+      const response = await fetch(`${API_BASE_URLs}/trendingmovies`);
       const data = await response.json();
 
-      if (data.results) {
-        setTrendingMovies(data.results.slice(0, 10));
+      if (data.message) {
+        setTrendingMovies(data.message.slice(0, 10));
         setIsLoadingTrending(false);
       }
     } catch (error) {
@@ -100,17 +99,11 @@ const Home = () => {
     setIsLoadingUpcoming(true);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`
-      );
+      const response = await fetch(`${API_BASE_URLs}/upcomingmovies`);
       const data = await response.json();
 
-      if (data.results) {
-        const sortedMovies = data.results
-          .filter((movie) => movie.release_date)
-          .sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
-
-        setUpcomingMovies(sortedMovies.slice(0, 10));
+      if (data.message) {
+        setUpcomingMovies(data.message.slice(0, 10));
         setIsLoadingUpcoming(false);
       }
     } catch (error) {
@@ -122,26 +115,17 @@ const Home = () => {
     setIsLoadingPopular(true);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-US`
-      );
+      const response = await fetch(`${API_BASE_URLs}/popularmovies`);
       const data = await response.json();
 
-      if (data.results) {
-        const sortedMovies = data.results
-          .filter((movie) => movie.release_date)
-          .sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
-
-        setPopularMovies(sortedMovies.slice(0, 10));
+      if (data.message) {
+        setPopularMovies(data.message.slice(0, 10));
         setIsLoadingPopular(false);
       }
     } catch (error) {
       setIsLoadingPopular(false);
     }
   };
-
-
-
 
   return (
     <main>
@@ -176,7 +160,7 @@ const Home = () => {
         {isLoadingTrending ? (
           <section className="trending">
             <h2 className="text-2xl font-bold mb-4">Trending Movies</h2>
-            <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7">
+            <ul className="grid mt-5 grid-cols-2 sm:grid-cols-3 md:grid-cols-7">
               {[...Array(7)].map((_, index) => (
                 <li
                   key={index}
@@ -196,7 +180,7 @@ const Home = () => {
                 {trendingMovies.map((movie, index) => (
                   <li
                     key={movie.id}
-                    onClick={() => navigate(`/movie/${movie.id}`)}
+                    onClick={() => navigate(`/movie/${movie._id}`)}
                     style={{ cursor: "pointer" }}
                   >
                     <p className="pr-4">{index + 1}</p>
@@ -214,7 +198,7 @@ const Home = () => {
         {isLoadingUpcoming ? (
           <section className="upcoming">
             <h2 className="text-2xl font-bold mb-4">Upcoming Movies</h2>
-            <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7">
+            <ul className="grid mt-5 grid-cols-2 sm:grid-cols-3 md:grid-cols-7">
               {[...Array(7)].map((_, index) => (
                 <li
                   key={index}
@@ -234,7 +218,7 @@ const Home = () => {
                 {upcomingMovies.map((movie, index) => (
                   <li
                     key={movie.id}
-                    onClick={() => navigate(`/movie/${movie.id}`)}
+                    onClick={() => navigate(`/movie/${movie._id}`)}
                     style={{ cursor: "pointer" }}
                   >
                     <p className="pr-4">{index + 1}</p>
@@ -252,7 +236,7 @@ const Home = () => {
         {isLoadingPopular ? (
           <section className="trending">
             <h2 className="text-2xl font-bold mb-4">Popular Movies</h2>
-            <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7">
+            <ul className="grid mt-5 grid-cols-2 sm:grid-cols-3 md:grid-cols-7">
               {[...Array(7)].map((_, index) => (
                 <li
                   key={index}
@@ -272,7 +256,7 @@ const Home = () => {
                 {popularMovies.map((movie, index) => (
                   <li
                     key={movie.id}
-                    onClick={() => navigate(`/movie/${movie.id}`)}
+                    onClick={() => navigate(`/movie/${movie._id}`)}
                     style={{ cursor: "pointer" }}
                   >
                     <p className="pr-4">{index + 1}</p>
@@ -287,36 +271,55 @@ const Home = () => {
           )
         )}
 
-        <section className="all-movies">
-          <h2 className="mt-10">
-            {debouncedSearchTerm ? "Search Results" : "All Movies"}
-          </h2>
-          {isLoading || errorMessage ? (
-            <ul className="movie-list">
-              {[...Array(8)].map((_, index) => (
-                <li key={index} className="movie-card h-[479px]">
-                  <div className="movie-card-skeleton">
-                    <Skeleton height={300} width="100%" />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <ul>
-              {movieList.map((movie) => (
-                <MovieCard
-                  key={movie.id}
-                  movie={{
-                    imdbID: movie.id,
-                    Poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-                    Title: movie.title,
-                  }}
-                  onClick={() => navigate(`/movie/${movie.id}`)}
-                />
-              ))}
-            </ul>
-          )}
-        </section>
+        <main>
+          <div className="wrapper">
+            <section className="all-movies">
+              <div className="flex justify-between">
+                <h2 className="mt-10 flex">
+                  {debouncedSearchTerm ? "Search Results" : "All Movies"}
+                </h2>
+                <header>
+                  <select
+                    value={sortOption}
+                    onChange={(e) => setSortOption(e.target.value)}
+                    className="  border p-2 bg-dark-100 text-gray-100  "
+                  >
+                    <option value="">Filter Movie </option>
+                    <option value="vote_count">Vote Count</option>
+                    <option value="vote_average">Vote Average</option>
+                    <option value="popularity">Popularity</option>
+                  </select>
+                </header>
+              </div>
+
+              {isLoading || errorMessage ? (
+                <ul className="movie-list">
+                  {[...Array(8)].map((_, index) => (
+                    <li key={index} className="movie-card h-[479px]">
+                      <div className="movie-card-skeleton">
+                        <Skeleton height={300} width="100%" />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <ul>
+                  {movieList.map((movie) => (
+                    <MovieCard
+                      key={movie.id}
+                      movie={{
+                        imdbID: movie._id,
+                        Poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+                        Title: movie.title,
+                      }}
+                      onClick={() => navigate(`/movie/${movie.id}`)}
+                    />
+                  ))}
+                </ul>
+              )}
+            </section>
+          </div>
+        </main>
       </div>
       {showPopup && (
         <div className="z-50 fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center">
@@ -331,9 +334,9 @@ const Home = () => {
                 onClick={() => handleRedirect("/signup")}
                 className="cursor-pointer  w-full px-4 py-2 bg-transparent text-white border border-white rounded-full hover:bg-gray-600"
               >
-               Sign up with Otp less
+                Sign up with Otp less
               </button>
-              <Signupgoggle/>
+              <Signupgoggle />
             </div>
           </div>
         </div>
