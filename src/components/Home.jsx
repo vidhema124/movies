@@ -5,7 +5,7 @@ import { useDebounce } from "react-use";
 import Skeleton from "react-loading-skeleton";
 import { useNavigate } from "react-router-dom";
 import Signupgoggle from "./Signupwithgoggle.jsx";
-
+import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 const API_BASE_URLs = "https://movies-app-jgjm.onrender.com/api/v1";
 
 const Home = () => {
@@ -22,6 +22,9 @@ const Home = () => {
   const [isLoadingPopular, setIsLoadingPopular] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [sortOption, setSortOption] = useState("");
+  const [movies, setMovies] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(null);
 
   const navigate = useNavigate();
 
@@ -32,13 +35,14 @@ const Home = () => {
       setShowPopup(hasLoggedIn !== "true");
     }
   }, []);
-
   useEffect(() => {
     fetchTrendingMovies();
     fetchUpcomingMovies();
     fetchPopularMovies();
+  }, []);
+  useEffect(() => {
     fetchMovies();
-  }, [debouncedSearchTerm, sortOption]);
+  }, [debouncedSearchTerm, sortOption, currentPage]);
 
   const fetchMovies = async () => {
     setIsLoading(true);
@@ -48,6 +52,8 @@ const Home = () => {
       let endpoint = `${API_BASE_URLs}/movies`;
 
       const queryParams = new URLSearchParams();
+      queryParams.append("limit", 20); // Ensure limit is always 20
+      queryParams.append("page", currentPage);
       if (debouncedSearchTerm)
         queryParams.append("search", debouncedSearchTerm);
       if (sortOption) queryParams.append("sort", sortOption);
@@ -64,6 +70,7 @@ const Home = () => {
       }
 
       setMovieList(data.message);
+      setTotalPages(data.totalPages);
     } catch (error) {
       setErrorMessage("Error fetching movies. Please try again later.");
     } finally {
@@ -284,7 +291,7 @@ const Home = () => {
                     onChange={(e) => setSortOption(e.target.value)}
                     className="  border p-2 bg-dark-100 text-gray-100  "
                   >
-                    <option value="">Filter Movie </option>
+                    <option value="">Filter Movies </option>
                     <option value="vote_count">Vote Count</option>
                     <option value="vote_average">Vote Average</option>
                     <option value="popularity">Popularity</option>
@@ -317,6 +324,28 @@ const Home = () => {
                   ))}
                 </ul>
               )}
+              <div className="flex justify-center mt-4">
+                <button
+                  className="mx-2 p-2 bg-gray-700 text-white rounded"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
+                  disabled={currentPage === 1}
+                >
+                  <AiOutlineArrowLeft />
+                </button>
+                <span className="p-2 text-white">
+                  Page {currentPage} next {totalPages}
+                </span>
+                <button
+                  className="mx-2 p-2 bg-gray-700 text-white rounded"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                >
+                  <AiOutlineArrowRight />
+                </button>
+              </div>
             </section>
           </div>
         </main>
