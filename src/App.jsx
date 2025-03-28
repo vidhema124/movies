@@ -9,6 +9,7 @@ import WishlistPage from "./components/WishlistPage.jsx";
 import SubscriptionPage from "./components/SubscriptionPage.jsx";
 import Signup from "./components/Signup.jsx";
 import Home from "./components/Home.jsx";
+import ReviewForm from "./components/ReviewForm.jsx";
 
 const App = () => {
   return (
@@ -19,6 +20,8 @@ const App = () => {
         <Route path="/movie/:id" element={<MovieDetail />} />
         <Route path="/wishlist" element={<WishlistPage />} />
         <Route path="/subscriptionPage" element={<SubscriptionPage />} />
+        <Route path="/movie/:id/review" element={<ReviewForm />} />
+
       </Routes>
     </Router>
   );

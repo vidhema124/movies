@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import ReviewForm from "./ReviewForm";
+import { FaShare } from "react-icons/fa6";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = "148d7fb358e9a2f5b04a7567677ec479";
@@ -17,7 +19,34 @@ const MovieDetail = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
-  const movieId = searchParams.get("movieId") || movie?._id || "";
+  // const movieId = searchParams.get("movieId") || movie?._id || "";
+  const movieId = searchParams.get("movieId") || movie?._id || id || "";
+
+  const handleShare = async () => {
+    const movieURL = window.location.href; // Get the current page URL
+    const movieTitle = movie?.original_title || "Check out this movie!";
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: movieTitle,
+          text: `Check out ${movieTitle} on our website!`,
+          url: movieURL,
+        });
+      } catch (error) {
+        console.error("Error sharing:", error);
+      }
+    } else {
+      // Fallback: Copy to Clipboard
+      navigator.clipboard.writeText(movieURL);
+      alert("Link copied to clipboard!");
+    }
+  };
+
+
+   const handleRedirect = () => {
+    navigate(`/movie/${id}/review`); // Update this path as needed
+  };
   useEffect(() => {
     const fetchMovieDetail = async () => {
       setIsLoading(true);
@@ -39,13 +68,11 @@ const MovieDetail = () => {
         );
         const videoData = await videoRes.json();
 
-        const trailer = videoData.results.find(
+        const trailer = videoData?.results?.find(
           (video) => video.type === "Trailer" && video.site === "YouTube"
         );
-
-        if (trailer) {
-          setTrailerKey(trailer.key);
-        }
+        if (trailer) setTrailerKey(trailer.key);
+        
       } catch (error) {
         setErrorMessage("Failed to load movie details.");
       } finally {
@@ -111,21 +138,38 @@ const MovieDetail = () => {
   return movie ? (
     <div className="movie-detail bg-gray-900 text-white min-h-screen flex flex-col items-center p-6">
       {/* Back Button */}
+      <div className="flex">
       <button
-        className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg self-start mb-4"
+        className=" bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg self-start mb-4"
         onClick={() => navigate(-1)}
       >
         ← Go Back
       </button>
+    {/* //<div className="d-flex justify-content-end"> */}
+  <button onClick={handleRedirect}className=" ml-50 bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg self-start mb-4"
+  >
+    Go to Review Form
+  </button>
+{/* </div> */}
+      </div>
+      
 
-      {/* Movie Backdrop */}
+      <div className="relative">
       {movie.backdrop_path && (
+      
         <img
           className="w-full max-w-4xl h-64 object-cover rounded-lg mb-6 shadow-lg"
           src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
           alt={`${movie.title} Backdrop`}
         />
       )}
+ <button
+          className=" cursor-pointer absolute top-0.5 right-0.5 text-white h-10 px-4 py-2 rounded-lg flex items-center gap-2"
+          onClick={handleShare}
+        >
+          <FaShare />
+        </button>
+        </div>
 
       {/* Movie Details */}
       <h1 className="text-4xl font-bold mb-4">{movie.original_title}</h1>
