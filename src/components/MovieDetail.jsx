@@ -47,6 +47,7 @@ const MovieDetail = () => {
   };
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
