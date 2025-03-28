@@ -23,6 +23,7 @@ const SignupGoogle = () => {
         );
 
         localStorage.setItem("hasLoggedIn", "true");
+        localStorage.setItem("userData", JSON.stringify(res));
         navigate(0);
       }
     } catch (error) {}

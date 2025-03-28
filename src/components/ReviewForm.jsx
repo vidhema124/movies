@@ -74,7 +74,7 @@ const ReviewForm = ({ reviews }) => {
           </button>
           {isOpen && (
             <div className="z-40 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-              <div className="bg-white p-6 rounded-lg shadow-lg w-150 h-100">
+              <div className="bg-white p-6 rounded-lg shadow-lg w-100 h-100 md:w-150">
                 <div className="flex justify-between">
                   {" "}
                   <h2 className="text-black text-lg font-bold mb-4">
@@ -118,7 +118,7 @@ const ReviewForm = ({ reviews }) => {
         </div>
       </div>
 
-      <div className=" text-black md:max-h-[300px] overflow-auto scrollbar-hide ">
+      <div className=" text-black max-h-[300px] overflow-auto scrollbar-hide ">
         <h3 className="text-lg  font-semibold text-gray-700">User Reviews</h3>
         {reviews.length > 0 ? (
           <div className="space-y-1  ">
