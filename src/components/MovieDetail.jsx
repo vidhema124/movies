@@ -4,6 +4,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ReviewForm from "./ReviewForm";
 import { FaShare } from "react-icons/fa6";
+import axios from "axios";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = "148d7fb358e9a2f5b04a7567677ec479";
@@ -19,6 +20,8 @@ const MovieDetail = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
+    const [reviews, setReviews] = useState([]);
+  
   // const movieId = searchParams.get("movieId") || movie?._id || "";
   const movieId = searchParams.get("movieId") || movie?._id || id || "";
 
@@ -42,6 +45,26 @@ const MovieDetail = () => {
       alert("Link copied to clipboard!");
     }
   };
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(
+          `https://movies-app-jgjm.onrender.com/api/v1/movie/${id}`
+        );
+        console.log(response,"responseresponse");
+        
+        setReviews(response.data.review.reviews || []); // Ensure response structure is correct
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+
+    if (id) {
+      fetchReviews();
+    }
+  }, [id]); // Runs when `id` changes
+
 
 
    const handleRedirect = () => {
@@ -81,6 +104,7 @@ const MovieDetail = () => {
     };
 
     fetchMovieDetail();
+
   }, [id]);
 
   useEffect(() => {
@@ -286,6 +310,9 @@ const MovieDetail = () => {
           </div>
         </div>
       )}
+
+
+      <ReviewForm reviews={reviews}/>
 
       {/* Search Results Section */}
       <div className="w-full mt-12 p-6">

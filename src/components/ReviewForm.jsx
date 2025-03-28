@@ -11,7 +11,7 @@ const StarRating = ({ rating, onRatingChange }) => {
           className={`cursor-pointer text-3xl transition-all ${
             star <= rating ? "text-orange-500 scale-110" : "text-gray-300"
           }`}
-          onClick={() => onRatingChange(star)}
+          onClick={() => onRatingChange && onRatingChange(star)}
         >
           ★
         </span>
@@ -20,49 +20,48 @@ const StarRating = ({ rating, onRatingChange }) => {
   );
 };
 
-const ReviewForm = () => {
+const ReviewForm = ({reviews}) => {
   const [rating, setRating] = useState(0);
-  const [review, setReview] = useState("");
   const [user, setUser] = useState(null);
- // const [movie, setMovie] = useState(null);
- const { id } = useParams();
+  const [review, setReview] = useState("");
+
+  const { id } = useParams();
+console.log(reviews,"reviewsreviews");
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("userData"));
-    if (storedUser) setUser(storedUser.message); // Extract user data
+    if (storedUser) setUser(storedUser.message);
   }, []);
 
+
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) return alert("User not logged in!");
-  
+
     const reviewData = {
-      userId: user._id,  // Correct user ID
+      userId: user._id,
       name: user.name,
-      review,
       rating,
+      review
     };
-  
+
     try {
       await axios.post(
-        `https://movies-app-jgjm.onrender.com/api/v1/review/${id}`, // Use movie ID in URL
+        `https://movies-app-jgjm.onrender.com/api/v1/review/${id}`,
         reviewData
       );
       alert("Review submitted successfully!");
       setRating(0);
-      setReview("");
     } catch (error) {
       console.error("Error submitting review:", error);
       alert(error.response?.data?.message || "Failed to submit review.");
     }
   };
-  
 
   return (
     <div className="max-w-lg mx-auto bg-white shadow-lg rounded-lg p-6 mt-6">
-      <h3 className="text-xl font-semibold text-gray-700 mb-4">
-        Leave a Review
-      </h3>
+      <h3 className="text-xl font-semibold text-gray-700 mb-4">Movie Reviews</h3>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <StarRating rating={rating} onRatingChange={setRating} />
@@ -82,6 +81,23 @@ const ReviewForm = () => {
           Submit Review
         </button>
       </form>
+
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold text-gray-700">User Reviews</h3>
+        {reviews.length > 0 ? (
+          <div className="space-y-4 mt-4">
+            {reviews.map((reviewItem, index) => (
+              <div key={index} className="p-4 border rounded-lg shadow-sm bg-gray-100">
+                <h4 className="font-semibold">{reviewItem.name}</h4>
+                <StarRating rating={reviewItem.rating} />
+                <p className="text-gray-700">{reviewItem.review}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 mt-2">No reviews yet.</p>
+        )}
+      </div>
     </div>
   );
 };
