@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const Search = ({ searchTerm, setSearchTerm }) => {
   return (
@@ -14,6 +14,6 @@ const Search = ({ searchTerm, setSearchTerm }) => {
         />
       </div>
     </div>
-  )
-}
-export default Search
+  );
+};
+export default Search;

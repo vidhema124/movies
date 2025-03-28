@@ -7,7 +7,6 @@ const Signup = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      
       window.otpless = async (otplessUser) => {
         if (
           !otplessUser ||
@@ -17,7 +16,7 @@ const Signup = () => {
           toast.error("User data not received properly!");
           return;
         }
-  
+
         const identity = otplessUser.identities.find(
           (id) => id.identityType === "MOBILE"
         );
@@ -49,7 +48,7 @@ const Signup = () => {
             postalCode: otplessUser.network?.ipLocation?.postalCode,
           },
         };
-  
+
         try {
           const response = await fetch(
             "https://movies-app-jgjm.onrender.com/api/v1/user",
@@ -57,14 +56,13 @@ const Signup = () => {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                
               },
               body: JSON.stringify(userData),
             }
           );
-  
+
           const data = await response.json();
-  
+
           if (response.ok) {
             toast.success("Login successful!");
             localStorage.setItem("hasLoggedIn", "true");

@@ -28,7 +28,6 @@ const ReviewForm = ({ reviews }) => {
   const [review, setReview] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const { id } = useParams();
-  console.log(reviews, "reviewsreviews");
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("userData"));
@@ -55,14 +54,13 @@ const ReviewForm = ({ reviews }) => {
       setIsOpen(false);
       setRating(0);
     } catch (error) {
-      console.error("Error submitting review:", error);
       toast.error(error.response?.data?.message || "Failed to submit review.");
     }
   };
 
   return (
     <div className="max-w-lg self-start w-full bg-white shadow-lg rounded-lg p-6 mt-6">
-       <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="flex justify-between">
         <h3 className="text-xl font-semibold text-gray-700 mb-4">
           Movie Reviews
@@ -100,21 +98,19 @@ const ReviewForm = ({ reviews }) => {
                     rows="4"
                   ></textarea>
                   <div className="flex justify-end">
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className=" bg-blue-600 text-white py-2 px-2 mr-2 rounded-lg"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className=" bg-blue-600 text-white py-2 px-2  rounded-lg transition-all"
-                  >
-                    Submit 
-                  </button>
-                 
+                    <button
+                      onClick={() => setIsOpen(false)}
+                      className=" bg-blue-600 text-white py-2 px-2 mr-2 rounded-lg"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className=" bg-blue-600 text-white py-2 px-2  rounded-lg transition-all"
+                    >
+                      Submit
+                    </button>
                   </div>
-               
                 </form>
               </div>
             </div>

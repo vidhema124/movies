@@ -20,13 +20,11 @@ const MovieDetail = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
-    const [reviews, setReviews] = useState([]);
-  
-  // const movieId = searchParams.get("movieId") || movie?._id || "";
+  const [reviews, setReviews] = useState([]);
   const movieId = searchParams.get("movieId") || movie?._id || id || "";
 
   const handleShare = async () => {
-    const movieURL = window.location.href; // Get the current page URL
+    const movieURL = window.location.href;
     const movieTitle = movie?.original_title || "Check out this movie!";
 
     if (navigator.share) {
@@ -36,11 +34,8 @@ const MovieDetail = () => {
           text: `Check out ${movieTitle} on our website!`,
           url: movieURL,
         });
-      } catch (error) {
-        console.error("Error sharing:", error);
-      }
+      } catch (error) {}
     } else {
-      // Fallback: Copy to Clipboard
       navigator.clipboard.writeText(movieURL);
       alert("Link copied to clipboard!");
     }
@@ -53,23 +48,18 @@ const MovieDetail = () => {
         const response = await axios.get(
           `https://movies-app-jgjm.onrender.com/api/v1/movie/${id}`
         );
-        console.log(response,"responseresponse");
-        
-        setReviews(response.data.review.reviews || []); // Ensure response structure is correct
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      }
+
+        setReviews(response.data.review.reviews || []);
+      } catch (error) {}
     };
 
     if (id) {
       fetchReviews();
     }
-  }, [id]); // Runs when `id` changes
+  }, [id]);
 
-
-
-   const handleRedirect = () => {
-    navigate(`/movie/${id}/review`); // Update this path as needed
+  const handleRedirect = () => {
+    navigate(`/movie/${id}/review`);
   };
   useEffect(() => {
     const fetchMovieDetail = async () => {
@@ -96,7 +86,6 @@ const MovieDetail = () => {
           (video) => video.type === "Trailer" && video.site === "YouTube"
         );
         if (trailer) setTrailerKey(trailer.key);
-        
       } catch (error) {
         setErrorMessage("Failed to load movie details.");
       } finally {
@@ -105,7 +94,6 @@ const MovieDetail = () => {
     };
 
     fetchMovieDetail();
-
   }, [id]);
 
   useEffect(() => {
@@ -120,7 +108,6 @@ const MovieDetail = () => {
         const data = await response.json();
         setMovies(data.similarMovies || []);
       } catch (error) {
-        console.error("Failed to fetch similar movies:", error);
       } finally {
         setLoading(false);
       }
@@ -129,7 +116,6 @@ const MovieDetail = () => {
     fetchSimilarMovies();
   }, [movieId]);
 
-  // **Skeleton Loader for UI**
   if (isLoading) {
     return (
       <div className="p-6 text-white min-h-screen bg-gray-900 flex flex-col items-center">
@@ -162,42 +148,32 @@ const MovieDetail = () => {
 
   return movie ? (
     <div className="movie-detail bg-gray-900 text-white min-h-screen flex flex-col items-center p-6">
-      {/* Back Button */}
-
       <button
         className=" bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg self-start mb-4"
         onClick={() => navigate(-1)}
       >
         ← Go Back
       </button>
-    {/* //<div className="d-flex justify-content-end"> */}
-  
-{/* </div> */}
-      
-      
 
       <div className="relative">
-      {movie.backdrop_path && (
-      
-        <img
-          className="w-full max-w-4xl h-64 object-cover rounded-lg mb-6 shadow-lg"
-          src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
-          alt={`${movie.title} Backdrop`}
-        />
-      )}
- <button
+        {movie.backdrop_path && (
+          <img
+            className="w-full max-w-4xl h-64 object-cover rounded-lg mb-6 shadow-lg"
+            src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
+            alt={`${movie.title} Backdrop`}
+          />
+        )}
+        <button
           className=" cursor-pointer absolute top-0.5 right-0.5 text-white h-10 px-4 py-2 rounded-lg flex items-center gap-2"
           onClick={handleShare}
         >
           <FaShare />
         </button>
-        </div>
+      </div>
 
-      {/* Movie Details */}
       <h1 className="text-4xl font-bold mb-4">{movie.original_title}</h1>
 
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-        {/* Movie Poster */}
         <img
           className="w-64 md:w-80 rounded-lg shadow-lg"
           src={
@@ -208,7 +184,6 @@ const MovieDetail = () => {
           alt={movie.title}
         />
 
-        {/* Movie Information */}
         <div className="text-lg space-y-4">
           <p>
             <strong>Release Date:</strong> {movie.release_date}
@@ -251,7 +226,6 @@ const MovieDetail = () => {
             )}
           </p>
 
-          {/* IMDb Link */}
           <a
             href="https://www.imdb.com/chart/top/"
             target="_blank"
@@ -292,7 +266,6 @@ const MovieDetail = () => {
         </div>
       </div>
 
-      {/* Movie Trailer */}
       {trailerKey && (
         <div className="mt-6 w-full max-w-2xl">
           <h2 className="text-2xl font-bold mb-2 text-center">Watch Trailer</h2>
@@ -309,10 +282,8 @@ const MovieDetail = () => {
         </div>
       )}
 
+      <ReviewForm reviews={reviews} />
 
-      <ReviewForm  reviews={reviews} />
-
-      {/* Search Results Section */}
       <div className="w-full mt-12 p-6">
         <h2 className="text-2xl font-bold mb-4">Similar Movies</h2>
 

@@ -20,14 +20,14 @@ const WishlistPage = () => {
 
       try {
         const moviePromises = savedMovieIds.map((id) =>
-          fetch(`${API_BASE_URL}/${id}?api_key=${API_KEY}&language=en-US`).then((res) => res.json())
+          fetch(`${API_BASE_URL}/${id}?api_key=${API_KEY}&language=en-US`).then(
+            (res) => res.json()
+          )
         );
 
         const movies = await Promise.all(moviePromises);
         setWishlistMovies(movies);
-      } catch (error) {
-        console.error("Error fetching wishlist movies:", error);
-      }
+      } catch (error) {}
     };
 
     fetchWishlistMovies();
@@ -37,8 +37,9 @@ const WishlistPage = () => {
     <div className="mt-4">
       <h2 className="text-2xl font-bold mb-4">My Wishlist</h2>
       {wishlistMovies.length === 0 ? (
-       <p className="text-red-500 text-lg font-semibold">No movies in wishlist</p>
-
+        <p className="text-red-500 text-lg font-semibold">
+          No movies in wishlist
+        </p>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
           {wishlistMovies.map((movie) => (

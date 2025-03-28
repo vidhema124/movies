@@ -9,7 +9,6 @@ const SignupGoogle = () => {
   const handleSignup = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log("resultresult ", result);
 
       const user = result.user;
 
@@ -23,15 +22,10 @@ const SignupGoogle = () => {
           body
         );
 
-        console.log("resresres ", res);
         localStorage.setItem("hasLoggedIn", "true");
         navigate(0);
-      } else {
-        console.error("Failed to create user");
       }
-    } catch (error) {
-      console.error("Error during signup:", error);
-    }
+    } catch (error) {}
   };
 
   return (
