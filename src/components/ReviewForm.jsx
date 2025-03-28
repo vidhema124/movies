@@ -10,9 +10,8 @@ const StarRating = ({ rating, onRatingChange }) => {
       {[1, 2, 3, 4, 5].map((star) => (
         <span
           key={star}
-          className={`cursor-pointer text-3xl  transition-all ${
-            star <= rating ? "text-orange-500 scale-110" : "text-gray-300"
-          }`}
+          className={`cursor-pointer text-3xl  transition-all ${star <= rating ? "text-orange-500 scale-110" : "text-gray-300"
+            }`}
           onClick={() => onRatingChange && onRatingChange(star)}
         >
           ★
@@ -31,12 +30,13 @@ const ReviewForm = ({ reviews }) => {
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("userData"));
-    if (storedUser) setUser(storedUser.message);
+    if (storedUser) setUser(storedUser.data.message);
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) return alert("User not logged in!");
+
 
     const reviewData = {
       userId: user._id,
