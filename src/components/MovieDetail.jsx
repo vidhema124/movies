@@ -162,7 +162,7 @@ const MovieDetail = () => {
   return movie ? (
     <div className="movie-detail bg-gray-900 text-white min-h-screen flex flex-col items-center p-6">
       {/* Back Button */}
-      <div className="flex">
+
       <button
         className=" bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg self-start mb-4"
         onClick={() => navigate(-1)}
@@ -170,12 +170,9 @@ const MovieDetail = () => {
         ← Go Back
       </button>
     {/* //<div className="d-flex justify-content-end"> */}
-  <button onClick={handleRedirect}className=" ml-50 bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg self-start mb-4"
-  >
-    Go to Review Form
-  </button>
+  
 {/* </div> */}
-      </div>
+      
       
 
       <div className="relative">
@@ -312,7 +309,7 @@ const MovieDetail = () => {
       )}
 
 
-      <ReviewForm reviews={reviews}/>
+      <ReviewForm  reviews={reviews} />
 
       {/* Search Results Section */}
       <div className="w-full mt-12 p-6">
