@@ -30,13 +30,14 @@ const ReviewForm = ({ reviews }) => {
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("userData"));
-    if (storedUser) setUser(storedUser.data.message);
+    if (storedUser) setUser(storedUser.data.message || storedUser.message);
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) return alert("User not logged in!");
 
+console.log(user);
 
     const reviewData = {
       userId: user._id,
@@ -62,13 +63,13 @@ const ReviewForm = ({ reviews }) => {
     <div className="max-w-lg self-start w-full bg-white shadow-lg rounded-lg p-6 mt-6">
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="flex justify-between">
-        <h3 className="text-xl font-semibold text-gray-700 mb-4">
+        <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-5">
           Movie Reviews
         </h3>
         <div>
           <button
             onClick={() => setIsOpen(true)}
-            className="bg-gray-400 text-white px-4 py-1 rounded-lg hover:bg-amber-600"
+            className="bg-gray-400 mt-5 text-white px-4 py-1 rounded-lg hover:bg-amber-600"
           >
             Write a Review
           </button>

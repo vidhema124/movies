@@ -22,6 +22,22 @@ const MovieDetail = () => {
   const [searchParams] = useSearchParams();
   const [reviews, setReviews] = useState([]);
   const movieId = searchParams.get("movieId") || movie?._id || id || "";
+   const [userId, setUserId] = useState(null);
+   const [vote,setVote]= useState(0)
+  useEffect(() => {
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        const id = parsedData?.message?._id || parsedData?.data?.message?._id;
+    
+        setUserId(id);
+        console.log("User ID:", id);
+      } catch (error) {
+        console.error("Error parsing userData:", error);
+      }
+    }
+  }, []);
 
   const handleShare = async () => {
     const movieURL = window.location.href;
@@ -41,6 +57,20 @@ const MovieDetail = () => {
     }
   };
 
+  const voteCount = async () => {
+    try {
+      const response = await axios.post(
+        `https://movies-app-jgjm.onrender.com/api/v1/vote/${id}`,
+        {userID:userId} 
+      );
+
+      console.log("Vote successful:", response.data);
+      setVote(response.data.totalVotes);
+    } catch (error) {
+      console.error("Error voting:", error);
+    }
+  };
+  
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     const fetchReviews = async () => {
@@ -75,6 +105,7 @@ const MovieDetail = () => {
         }
 
         setMovie(data.message);
+        setVote(data.message.vote_count)
 
         const movieId = data.id;
         const videoRes = await fetch(
@@ -206,11 +237,12 @@ const MovieDetail = () => {
             <strong>Vote Average:</strong> ⭐ {movie.vote_average} / 10
           </p>
           <p>
-            <strong>Vote Count:</strong> {movie.vote_count}
+            <strong>Vote Count:</strong> {vote}
           </p>
           <p>
             <strong>Adult Content:</strong> {movie.adult ? "Yes 🔞" : "No ✅"}
           </p>
+
           <p>
             <strong>Trailer Available:</strong>{" "}
             {trailerKey ? (
@@ -281,9 +313,11 @@ const MovieDetail = () => {
           </div>
         </div>
       )}
-
-      <ReviewForm reviews={reviews} />
-
+<div className="relative flex">
+<ReviewForm className="w-full"reviews={reviews} />
+      <button onClick={voteCount}              className="absolute top-6 right-5 bg-gray-400 h-10  text-white px-4 py-1 rounded-lg hover:bg-amber-600">vote</button>
+</div>
+      
       <div className="w-full mt-12 p-6">
         <h2 className="text-2xl font-bold mb-4">Similar Movies</h2>
 

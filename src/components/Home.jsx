@@ -314,6 +314,7 @@ const Home = () => {
                   {movieList.map((movie) => (
                     <MovieCard
                       key={movie.id}
+                      movie_id={movie._id}
                       movie={{
                         imdbID: movie._id,
                         Poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,

@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const WISHLIST_API = "https://movies-app-jgjm.onrender.com/api/v1/addtowishlist";
 
-
-const MovieCard = ({ movie, Poster }) => {
-  
+const MovieCard = ({ movie, movie_id }) => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState();
+  const [wishlist, setWishlist] = useState([])
 
+  // Get user ID from localStorage
   useEffect(() => {
     const userData = localStorage.getItem("userData");
-
     if (userData) {
       try {
         const parsedData = JSON.parse(userData);
-        const id = parsedData?.message?._id; 
+        const id = parsedData?.message?._id || parsedData?.data?.message?._id;
+    
         setUserId(id);
         console.log("User ID:", id);
       } catch (error) {
@@ -25,31 +26,40 @@ const MovieCard = ({ movie, Poster }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (!userId || !movie.imdbID) return;
+  useEffect(function(){
+    async function getUser(){
+      if(userId){
+      const result = await axios.get(`https://movies-app-jgjm.onrender.com/api/v1/user/${userId}`)
+      setWishlist(result.data.message.wishlist)
+    }
+  }
+    getUser()
+  },[userId,isWishlisted])
 
-    const fetchWishlist = async () => {
-      try {
-        const response = await fetch(`${WISHLIST_API}?userID=${userId}`);
-        const wishlistData = await response.json();
+  // Fetch wishlist status
+  // useEffect(() => {
+  //   const fetchWishlistStatus = async () => {
+  //     if (!userId) return;
 
-        if (response.ok) {
-          const savedMovieIds = wishlistData?.data?.map((item) => item.movieID) || [];
-          setIsWishlisted(savedMovieIds.includes(movie.imdbID));
-        }
-        console.log("Wishlist response:", wishlistData);
-      } catch (error) {
-        console.error("Error fetching wishlist:", error);
-      }
-    };
+  //     try {
+  //       const response = await fetch(`https://movies-app-jgjm.onrender.com/api/v1/getwishlist?userID=${userId}`);
+  //       const data = await response.json();
 
-    fetchWishlist();
-  }, [userId, movie.imdbID]);
+  //       if (response.ok) {
+  //         const isMovieWishlisted = data?.wishlist?.some(item => item.movieID === movie.imdbID);
+  //         setIsWishlisted(isMovieWishlisted);
+  //       } else {
+  //         console.error("Failed to fetch wishlist:", data);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching wishlist:", error);
+  //     }
+  //   };
 
-  const handleClick = () => {
-    navigate(`/movie/${movie.imdbID}`);
-  };
+  //   fetchWishlistStatus();
+  // }, [userId, movie.imdbID]);
 
+  // Toggle Wishlist
   const toggleWishlist = async (e) => {
     e.stopPropagation();
 
@@ -58,27 +68,24 @@ const MovieCard = ({ movie, Poster }) => {
       return;
     }
 
-    console.log("Sending request to:", WISHLIST_API);
-    console.log("User ID:", userId, "Movie ID:", movie.imdbID);
-
     try {
       const response = await fetch(WISHLIST_API, {
-        method: "PATCH",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           userID: userId,
           movieID: movie.imdbID,
+          action: isWishlisted ? "remove" : "add", 
         }),
       });
 
-      console.log("Response status:", response.status);
-      const data = await response.json();
-      console.log("Response data:", data);
 
+      const data = await response.json();
+      setWishlist(data.message)
       if (response.ok) {
-        setIsWishlisted(!isWishlisted);
+        setIsWishlisted((prev) => !prev);
       } else {
         console.error("Failed to update wishlist:", data);
       }
@@ -87,13 +94,11 @@ const MovieCard = ({ movie, Poster }) => {
     }
   };
 
-
-
   return (
-    <div className="movie-card" onClick={handleClick} style={{ cursor: "pointer" }}>
+    <div className="movie-card" onClick={() => navigate(`/movie/${movie.imdbID}`)} style={{ cursor: "pointer" }}>
       <img
         src={
-          Poster !== "N/A"
+          movie.Poster !== "N/A"
             ? movie.Poster
             : movie.poster_path
             ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
@@ -114,8 +119,8 @@ const MovieCard = ({ movie, Poster }) => {
           <p className="year">{movie.Year || "N/A"}</p>
         </div>
 
-        <button onClick={toggleWishlist} className="wishlist-btn">
-          {isWishlisted ? "❤️" : "🤍"}
+        <button onClick={toggleWishlist} className="wishlist-btn cursor-pointer">
+          { wishlist.includes(movie_id) ? "❤️" : "🤍"}
         </button>
       </div>
     </div>
