@@ -5,6 +5,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import ReviewForm from "./ReviewForm";
 import { FaShare } from "react-icons/fa6";
 import axios from "axios";
+import ChatBox from "./ChatBox";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = "148d7fb358e9a2f5b04a7567677ec479";
@@ -317,7 +318,7 @@ const MovieDetail = () => {
 <ReviewForm className="w-full"reviews={reviews} />
       <button onClick={voteCount}              className="absolute top-6 right-5 bg-gray-400 h-10  text-white px-4 py-1 rounded-lg hover:bg-amber-600">vote</button>
 </div>
-      
+      <ChatBox/>
       <div className="w-full mt-12 p-6">
         <h2 className="text-2xl font-bold mb-4">Similar Movies</h2>
 

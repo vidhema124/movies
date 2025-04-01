@@ -37,12 +37,12 @@ const WishlistPage = () => {
           const errorData = await response.json();
           
           // Handle specific error message related to invalid ObjectId
-          if (errorData?.status === "fail" && errorData?.message.includes("Cast to ObjectId failed")) {
-            setWishlistMovies([]);  // No movies available
-            setError("Invalid user ID format.");
-            setLoading(false);
-            return;
-          }
+          // if (errorData?.status === "fail" && errorData?.message.includes("Cast to ObjectId failed")) {
+          //   setWishlistMovies([]);  // No movies available
+          //   setError("Invalid user ID format.");
+          //   setLoading(false);
+          //   return;
+          // }
     
           throw new Error(errorData?.message || "Failed to fetch wishlist");
         }
@@ -80,12 +80,13 @@ const WishlistPage = () => {
           {wishlistMovies.map((movie) => (
             <MovieCard
               key={movie._id}
+              movie_id={movie._id}
               movie={{
-                imdbID: movie.id,
+                imdbID: movie._id,
                 Poster: movie.poster_path, // Already contains full URL
                 Title: movie.title,
               }}
-              onClick={() => navigate(`/movie/${movie.id}`)}
+              onClick={() => navigate(`/movie/${movie._id}`)}
             />
           ))}
         </div>

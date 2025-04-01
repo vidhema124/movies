@@ -11,6 +11,7 @@ const SignupGoogle = () => {
       const result = await signInWithPopup(auth, provider);
 
       const user = result.user;
+console.log(user);
 
       if (user) {
         let body = {
